@@ -141,7 +141,7 @@ def update_index(index_path: Path, loader_name: str, version: str) -> None:
         "vanilla/polyfill.html",
         content,
     )
-    content, version_count = re.subn(r"(ver:)\S+", rf"\g<1>{version}", content, count=1)
+    content, version_count = re.subn(r"(ver:)[^<\s]+", rf"\g<1>{version}", content, count=1)
     if (normal_count, polyfill_count, version_count) != (1, 1, 1):
         raise RuntimeError("index.html 中的普通版链接、兼容版链接或版本号格式不符合预期")
     meta = f'<meta name="dol-loader-version" content="{loader_name}" />'
