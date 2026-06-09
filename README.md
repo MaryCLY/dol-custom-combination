@@ -33,3 +33,11 @@ python .\update_upstream.py --publish
 `dol-loader-version` 元数据判断是否需要更新；使用 `--force` 可强制重新下载。
 设置 `GITHUB_TOKEN` 或 `GH_TOKEN` 可以避免 GitHub API 的匿名请求限流；未设置或 API
 限流时，脚本会自动改用 GitHub release 页面查询。
+
+## GitHub Actions 自动更新
+
+`.github/workflows/update-upstream.yml` 会每天检查一次上游 release。检测到新版本时，
+工作流会自动替换文件、创建提交并推送到默认分支；没有新版本时不会产生提交。
+
+也可以在仓库的 Actions 页面手动运行该工作流。工作流还支持
+`repository_dispatch` 的 `upstream_release` 事件，供外部服务或上游仓库主动触发。

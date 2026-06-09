@@ -1,0 +1,41 @@
+name: Update upstream release
+
+on:
+  schedule:
+    - cron: "17 19 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [upstream_release]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-upstream
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Configure Git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Update and publish
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python update_upstream.py --publish
